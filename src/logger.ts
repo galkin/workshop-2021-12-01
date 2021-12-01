@@ -23,10 +23,12 @@ const options: LoggerOptions = {
     paths: ['pid', 'hostname', 'body.password'],
     remove: true,
   },
-  transport: process.env.PRETTY_LOGGING ? {
-    target: 'pino-pretty',
-    options: prettyConfig
-  } : undefined
+  transport: process.env.PRETTY_LOGGING
+    ? {
+        target: 'pino-pretty',
+        options: prettyConfig,
+      }
+    : undefined,
 };
 
 const stdout = Pino(options);
