@@ -26,6 +26,7 @@
     "@nestjs/platform-express": "^8.0.0",
     "dotenv-safe": "^8.2.0",
     "pino": "^7.5.1",
+    "pino-pretty": "^7.2.0",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0"
