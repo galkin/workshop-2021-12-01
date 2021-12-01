@@ -13,7 +13,7 @@ const asyncLocalStorage = new AsyncLocalStorage<string>();
 export function setTraceId(requestId?: string) {
   const traceId = requestId || randomBytes(16).toString('hex');
   asyncLocalStorage.enterWith(traceId);
-  return traceId
+  return traceId;
 }
 
 const prettyConfig: PrettyOptions = {
