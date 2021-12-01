@@ -1,6 +1,7 @@
 import { AsyncLocalStorage } from 'async_hooks';
 import { randomBytes } from 'crypto';
 
+import { Logger as TypeOrmLogger, QueryRunner } from 'typeorm';
 import { LoggerService as LoggerServiceInterface } from '@nestjs/common';
 import Pino, { Logger, destination, Level, LoggerOptions } from 'pino';
 import { PrettyOptions } from 'pino-pretty';
@@ -83,3 +84,44 @@ export class LoggerService implements LoggerServiceInterface {
     logger.trace(message);
   }
 }
+
+class QueryLogger implements TypeOrmLogger {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  logQuery(query: string, parameters?: unknown[], queryRunner?: QueryRunner) {
+    if (query === 'SELECT 1') return;
+    logger.debug({ query, parameters }, 'New DB query');
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  logQueryError(error: string, query: string, parameters?: unknown[], queryRunner?: QueryRunner) {
+    logger.warn({ query, parameters }, 'Errored DB query');
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  logQuerySlow(time: number, query: string, parameters?: unknown[], queryRunner?: QueryRunner) {
+    logger.warn({ query, parameters, time }, 'Slow DB query');
+  }
+
+  logSchemaBuild(message: string, queryRunner?: QueryRunner) {
+    logger.trace(message, queryRunner);
+  }
+
+  logMigration(message: string, queryRunner?: QueryRunner) {
+    logger.info(message, queryRunner);
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  log(level: 'log' | 'info' | 'warn', message: unknown, queryRunner?: QueryRunner) {
+    switch (level) {
+      case 'log':
+      case 'info':
+        logger.trace({ message }, 'DB log');
+        break;
+      case 'warn':
+        logger.warn({ message }, 'DB warn');
+        break;
+    }
+  }
+}
+
+export const queryLogger = new QueryLogger();

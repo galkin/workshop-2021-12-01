@@ -3,11 +3,13 @@ import { AppController } from '~/app.controller';
 import { AppService } from '~/app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import config from '~/config';
+import { queryLogger } from '~/logger';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot({
       ...config.dbConfig,
+      logger: queryLogger
     }),
   ],
   controllers: [AppController],
