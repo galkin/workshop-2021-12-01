@@ -6,7 +6,7 @@ import { Level } from 'pino';
 config({
   allowEmptyValues: true,
   path: join(__dirname, '..', '.env'),
-  sample: join(__dirname, '..', '.env.example'),
+  sample: join(__dirname, '..', '.env.example')
 });
 
 export default {
@@ -15,6 +15,6 @@ export default {
   applicationName: 'workshop',
   version: process.env.VERSION || 'latest',
   http: {
-    port: process.env.HTTP_PORT,
-  },
+    port: process.env.HTTP_PORT
+  }
 };

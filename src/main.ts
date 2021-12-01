@@ -6,7 +6,7 @@ import { RestLoggingInterceptor } from '~/blocks/interceptors/rest-logging';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
-    logger: new LoggerService(),
+    logger: new LoggerService()
   });
   app.useGlobalInterceptors(new RestLoggingInterceptor());
   await app.listen(config.http.port);

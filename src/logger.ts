@@ -1,14 +1,25 @@
+import { AsyncLocalStorage } from 'async_hooks';
+import { randomBytes } from 'crypto';
+
 import { LoggerService as LoggerServiceInterface } from '@nestjs/common';
 import Pino, { Logger, destination, Level, LoggerOptions } from 'pino';
 import { PrettyOptions } from 'pino-pretty';
 
 import config from '~/config';
 
+const asyncLocalStorage = new AsyncLocalStorage<string>();
+
+export function setTraceId(requestId?: string) {
+  const traceId = requestId || randomBytes(16).toString('hex');
+  asyncLocalStorage.enterWith(traceId);
+  return traceId
+}
+
 const prettyConfig: PrettyOptions = {
   colorize: true,
   levelFirst: true,
   ignore: 'serviceContext',
-  translateTime: 'SYS:HH:MM:ss.l',
+  translateTime: 'SYS:HH:MM:ss.l'
 };
 
 const options: LoggerOptions = {
@@ -16,19 +27,19 @@ const options: LoggerOptions = {
   base: {
     serviceContext: {
       service: config.applicationName,
-      version: config.version,
-    },
+      version: config.version
+    }
   },
   redact: {
     paths: ['pid', 'hostname', 'body.password'],
-    remove: true,
+    remove: true
   },
   transport: process.env.PRETTY_LOGGING
     ? {
         target: 'pino-pretty',
-        options: prettyConfig,
+        options: prettyConfig
       }
-    : undefined,
+    : undefined
 };
 
 const stdout = Pino(options);
@@ -40,7 +51,7 @@ const logger: Pick<Logger, Level> = {
   info: stdout.info.bind(stdout),
   warn: stdout.warn.bind(stdout),
   error: stderr.error.bind(stderr),
-  fatal: stderr.fatal.bind(stderr),
+  fatal: stderr.fatal.bind(stderr)
 };
 
 export default logger;
@@ -51,8 +62,8 @@ export class LoggerService implements LoggerServiceInterface {
       err: {
         message,
         stack: trace,
-        context,
-      },
+        context
+      }
     });
   }
 
