@@ -1,0 +1,20 @@
+version: '3.7'
+
+services:
+  db:
+    container_name: workshop-db
+    image: postgres:12.3-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: workshop-local
+      POSTGRES_PASSWORD: password
+    ports:
+      - 5432:5432
+    networks:
+      - workshop
+
+networks:
+  workshop:
+    name: workshop_local
+    driver: bridge
